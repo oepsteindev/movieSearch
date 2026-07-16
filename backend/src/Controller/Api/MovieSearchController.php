@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class MovieSearchController extends AbstractController
 {
+    use CorsJsonResponseTrait;
+
     private const MIN_SEARCH_LENGTH = 4;// so we dont hammer the api on every keystroke
 
     #[Route('/api/movies', name: 'api_movies_search', methods: ['GET'])]
@@ -36,14 +38,5 @@ final class MovieSearchController extends AbstractController
             'results' => $movies,
             'count' => count($movies),
         ]);
-    }
-
-    //set a header for CORS on localhost to negotiate the frontend and backend running on different ports
-    private function jsonWithCors(array $data, int $status = 200): JsonResponse
-    {
-        $response = new JsonResponse($data, $status);
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-
-        return $response;
     }
 }
