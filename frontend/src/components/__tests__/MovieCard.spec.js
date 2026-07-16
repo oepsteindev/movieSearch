@@ -25,4 +25,16 @@ describe('MovieCard', () => {
 
     expect(wrapper.find('img').exists()).toBe(false)
   })
+
+  it('emits image-error with the movie id when the image fails to load', async () => {
+    const wrapper = mount(MovieCard, {
+      props: {
+        movie: { id: 'tt3', name: 'Dead Link Movie', image: 'https://example.com/dead.jpg', year: null },
+      },
+    })
+
+    await wrapper.find('img').trigger('error')
+
+    expect(wrapper.emitted('image-error')).toEqual([['tt3']])
+  })
 })

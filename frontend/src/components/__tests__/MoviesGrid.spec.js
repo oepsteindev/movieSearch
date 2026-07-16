@@ -43,4 +43,18 @@ describe('MoviesGrid', () => {
 
     expect(wrapper.text()).toContain('No movies found.')
   })
+
+  it('drops a card entirely once its image fails to load', async () => {
+    const wrapper = mount(MoviesGrid, {
+      props: { movies, isLoading: false, error: null },
+    })
+
+    expect(wrapper.findAll('.movie-card')).toHaveLength(2)
+
+    await wrapper.findAll('img')[0].trigger('error')
+
+    expect(wrapper.findAll('.movie-card')).toHaveLength(1)
+    expect(wrapper.text()).not.toContain('Foo')
+    expect(wrapper.text()).toContain('Bar')
+  })
 })
