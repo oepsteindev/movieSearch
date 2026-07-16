@@ -19,12 +19,6 @@ export const useMoviesStore = defineStore('movies', {
     async fetchMovies(term = '') {
       const trimmed = term.trim()
 
-      // Backstop matching the backend's own rule; the primary gate lives in
-      // SearchInput's debounce watcher.
-      if (trimmed.length > 0 && trimmed.length < 4) {
-        return
-      }
-
       this.isLoading = true
       this.error = null
 
