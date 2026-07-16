@@ -5,13 +5,25 @@ defineProps({
     required: true,
   },
 })
+
+// OMDb occasionally returns a syntactically valid poster URL that's actually
+// a dead link (404 on Amazon's CDN). We can't detect that server-side without
+// a live request per candidate, so the parent grid drops the card once the
+// browser itself fails to load the image.
+const emit = defineEmits(['image-error'])
 </script>
 
 <template>
   <article class="movie-card">
     <!-- The backend already drops posterless entries; this guard is just
          defense-in-depth against a malformed payload. -->
-    <img v-if="movie.image" :src="movie.image" :alt="movie.name" loading="lazy" />
+    <img
+      v-if="movie.image"
+      :src="movie.image"
+      :alt="movie.name"
+      loading="lazy"
+      @error="emit('image-error', movie.id)"
+    />
     <p class="movie-card__title">
       {{ movie.name }}
       <span v-if="movie.year">({{ movie.year }})</span>

@@ -74,6 +74,31 @@ Run npm commands inside the frontend container:
 docker compose exec frontend npm run build
 ```
 
+## Manual test walkthrough
+
+Once all three containers are up (`docker compose ps` should show `mysql`, `backend`, and `frontend` all running), try the app end-to-end:
+
+1. Open http://localhost:5173 in your browser.
+2. **Initial load** — a grid of up to 100 movies should appear automatically (poster, title, year), with nothing typed in the search box yet. This is the cached "default list" (internally seeded from the term `"movie"`).
+3. **Type 1–3 characters** (e.g. `bat`) — nothing should happen; the grid stays as-is. This confirms the 4-character minimum is enforced (no request is sent).
+4. **Type a 4th character** (e.g. `batm` or `batman`) — after a short pause (~400ms debounce), the grid should update to matching results without a page reload. (See "Known limitations" below if a search you expect to match returns nothing.)
+5. **Clear the search box** — the grid should revert to the original default list almost instantly (served from the backend's 1-hour cache, not a fresh OMDb call).
+6. **Check every card has an image** — none should be missing; the backend drops any movie without a poster rather than showing a broken image.
+7. **Resize the browser window narrower** — the grid should reflow to fewer columns.
+8. **(Optional) Error state** — run `docker compose stop backend`, reload the page, and confirm a friendly error message appears instead of a crash. Run `docker compose start backend` afterward to restore it.
+
+## Known limitations
+
+- **OMDb's search only matches whole words, not partial words.** `s=` (OMDb's search parameter, which every query here goes through) treats each word in your search term as needing to match a complete word in the title — it does not do prefix/substring matching within a word. For example, searching `"lego"` finds "The Lego Movie" (a complete word match), but searching `"the simp"` returns nothing for "The Simpsons Movie" even though it's a visible result in the default list, because `"simp"` is only a partial word and OMDb doesn't treat it as a prefix of `"Simpsons"`. This is upstream OMDb behavior, not a bug in this app — searching with complete words (e.g. `"simpsons"` instead of `"the simp"`) returns the expected result.
+- **A small number of movies may briefly appear then disappear from the grid.** OMDb occasionally reports a poster URL that looks valid but is actually a dead link (404) on Amazon's CDN. The backend only filters OMDb's explicit "no poster" signal (`"N/A"`); a dead-but-valid-looking URL can't be caught server-side without a live request per candidate. Instead, the frontend detects the failed image load in the browser and removes that card from the grid at that point — so on a slow connection you may see a card flash briefly before it's dropped.
+
+## Running tests
+
+```bash
+docker compose exec backend php bin/phpunit
+docker compose exec frontend npm test
+```
+
 ## Services
 
 | Service  | Container port | Host port | Notes |

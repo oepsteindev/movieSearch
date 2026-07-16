@@ -14,6 +14,17 @@ const searchTerm = computed({
   },
 })
 
+const hint = computed(() => {
+  const trimmed = searchTerm.value.trim()
+
+  if (trimmed.length > 0 && trimmed.length < MIN_SEARCH_LENGTH) {
+    const remaining = MIN_SEARCH_LENGTH - trimmed.length
+    return `Keep typing — ${remaining} more character${remaining === 1 ? '' : 's'} needed`
+  }
+
+  return null
+})
+
 let debounceTimer = null
 
 watch(searchTerm, (value) => {
@@ -41,7 +52,9 @@ watch(searchTerm, (value) => {
       type="search"
       autocomplete="off"
       placeholder="Type at least 4 characters…"
+      :aria-describedby="hint ? 'movie-search-hint' : undefined"
     />
+    <p v-if="hint" id="movie-search-hint" class="search-input__hint">{{ hint }}</p>
   </div>
 </template>
 
@@ -70,5 +83,11 @@ watch(searchTerm, (value) => {
 .search-input input:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+}
+
+.search-input__hint {
+  font-size: 13px;
+  color: var(--text);
+  margin: 0;
 }
 </style>
