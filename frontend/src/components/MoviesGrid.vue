@@ -15,7 +15,13 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  mode: {
+    type: String,
+    default: 'search',
+  },
 })
+
+const emit = defineEmits(['remove-from-list'])
 
 // Movies whose poster URL turned out to be a dead link once the browser
 // actually tried to load it (see MovieCard's image-error event) — dropped
@@ -23,6 +29,8 @@ const props = defineProps({
 const failedImageIds = reactive({})
 
 const visibleMovies = computed(() => props.movies.filter((movie) => !failedImageIds[movie.id]))
+
+const emptyMessage = computed(() => (props.mode === 'list-item' ? 'No favorites in this list yet.' : 'No movies found.'))
 
 function handleImageError(id) {
   failedImageIds[id] = true
@@ -35,14 +43,16 @@ function handleImageError(id) {
     {{ error }}
   </p>
   <p v-else-if="visibleMovies.length === 0" class="movies-grid__status">
-    No movies found.
+    {{ emptyMessage }}
   </p>
   <div v-else class="movies-grid">
     <MovieCard
       v-for="movie in visibleMovies"
       :key="movie.id"
       :movie="movie"
+      :mode="mode"
       @image-error="handleImageError"
+      @remove-from-list="emit('remove-from-list', $event)"
     />
   </div>
 </template>
