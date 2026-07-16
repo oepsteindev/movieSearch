@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import MoviesGrid from '../MoviesGrid.vue'
 
 const movies = [
@@ -8,6 +9,10 @@ const movies = [
 ]
 
 describe('MoviesGrid', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
   it('renders a card per movie', () => {
     const wrapper = mount(MoviesGrid, {
       props: { movies, isLoading: false, error: null },

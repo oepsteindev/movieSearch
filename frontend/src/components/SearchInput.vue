@@ -67,8 +67,8 @@ watch(searchTerm, (value) => {
 }
 
 .search-input label {
-  font-size: 14px;
-  color: var(--text);
+  font-size: 18px;
+  color: var(--text-h);
 }
 
 .search-input input {
