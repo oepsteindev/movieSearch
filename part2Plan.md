@@ -115,12 +115,12 @@ Replace the Part 2 placeholder in `README.md` with: new API endpoints, the fixtu
 
 1. ✅ Backend entities (`User`, `FavoriteList`, `FavoriteItem`) → repositories → migration (`diff` + review + `migrate`) → wire auto-migrate into the entrypoint.
 2. ✅ `doctrine/doctrine-fixtures-bundle` → `AppFixtures` → load fixtures, verify demo data via direct DB query.
-3. ⬜ DTOs → exceptions → `FavoritesService` (+ `FavoritesServiceTest`).
-4. ⬜ `CorsJsonResponseTrait` (refactor `MovieSearchController` to use it) → `FavoriteListController` (+ `FavoriteListControllerTest`, incl. the transaction-rollback `ApiTestCase` base).
-5. ⬜ Manual smoke test of all 6 endpoints via curl/docker exec against the real test setup.
-6. ⬜ Frontend: `stores/favorites.js` → extend `MovieCard.vue`/`MoviesGrid.vue` → `FavoriteLists.vue` → `ListDetail.vue` → wire into `App.vue`.
-7. ⬜ Frontend component tests.
-8. ⬜ README Part 2 section.
+3. ✅ DTOs → exceptions → `FavoritesService` (+ `FavoritesServiceTest`).
+4. ✅ `CorsJsonResponseTrait` (refactor `MovieSearchController` to use it) → `FavoriteListController` (+ `FavoriteListControllerTest`, incl. the transaction-rollback `ApiTestCase` base).
+5. ✅ Manual smoke test of all 6 endpoints via curl/docker exec against the real test setup.
+6. ✅ Frontend: `stores/favorites.js` → extend `MovieCard.vue`/`MoviesGrid.vue` → `FavoriteLists.vue` → `ListDetail.vue` → wire into `App.vue`.
+7. ✅ Frontend component tests.
+8. ✅ README Part 2 section.
 
 ## Verification
 

@@ -32,7 +32,9 @@ If needed, create a minimal `User` entity with:
 - `roles`
 - `password`
 
-Also add the relation to favorite lists.
+No `OneToMany` collection back to `FavoriteList` — nothing in the code ever
+navigates `user.lists`, it's always queried via `FavoriteListRepository`, so
+the collection would be unused mapping.
 
 ## FavoriteList entity
 
@@ -41,17 +43,19 @@ Create a `FavoriteList` entity with:
 - `id`
 - `name`
 - `owner` relation to `User`
-- `items` relation to `FavoriteItem`
 
-Make `owner` required.
+Make `owner` required. No `items` collection to `FavoriteItem` for the same
+reason as above — items are always queried via `FavoriteItemRepository`.
 
 ## FavoriteItem entity
 
 Create a `FavoriteItem` entity with:
 
 - `id`
-- `title`
-- `url`
+- `externalId` (the OMDb `imdbID`)
+- `name`
+- `image`
+- `year` (nullable)
 - `favoriteList` relation to `FavoriteList`
 
 Make `favoriteList` required.
