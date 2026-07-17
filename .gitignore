@@ -1,4 +1,4 @@
-.env
+/.env
 
 backend/vendor/
 backend/var/
